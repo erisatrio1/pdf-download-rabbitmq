@@ -47,20 +47,6 @@ Start the server
 Lakukan hal yang sama pada serviceDua.
 
 
-## Authors
-
-- [@erisatrio1](https://www.github.com/erisatrio1)
-
-
-## Running Tests
-
-To run tests, run the following command
-
-```bash
-  npm run test
-```
-
-
 ## Usage/Examples
 
 Buka Postman kemudian buatlah new request dengan method post ada endpoint: 
@@ -82,4 +68,9 @@ Negative case:
 Untuk mengetahui ketersediaan serviceDua, serviceSatu akan mengecek ketersediaan dengan hit endpoint http://localhost:5001/check 
 
 Jika serviceDua mati maka serviceSatu akan mengirimkan status 503 pada user.
+
+
+## Authors
+
+- [@erisatrio1](https://www.github.com/erisatrio1)
 
