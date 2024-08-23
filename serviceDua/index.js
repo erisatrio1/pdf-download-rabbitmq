@@ -1,6 +1,5 @@
 import express from 'express';
 import amqp from 'amqplib/callback_api.js';
-import path from 'path';
 import axios from 'axios';
 import * as Minio from 'minio'
 import stream from 'stream';
@@ -25,20 +24,20 @@ const logSchema = new mongoose.Schema({
 
 const Log = mongoose.model('Log', logSchema);
 
-let processedFiles = 0; // Counter untuk file yang berhasil di-download
-const failedLinks = []; // Array untuk menyimpan link yang gagal
-const retryLimit = 5; // Batas maksimal retry
+let processedFiles = 0; 
+const failedLinks = []; 
+const retryLimit = 5; 
 
 // Konfigurasi MinIO Client
 const minioClient = new Minio.Client({
-    endPoint: 'localhost', // Ubah sesuai dengan endpoint MinIO Anda
-    port: 9000, // Port MinIO
-    useSSL: false, // Ubah ke true jika menggunakan SSL
+    endPoint: 'localhost', 
+    port: 9000, 
+    useSSL: false, 
     accessKey: 'minioadmin',
     secretKey: 'minioadmin'
 });
 
-const bucketName = 'pdf-bucket'; // Nama bucket di MinIO
+const bucketName = 'pdf-bucket'; 
 
 // Check dan create bucket pada MinIO
 (async() => {
@@ -58,7 +57,7 @@ const bucketName = 'pdf-bucket'; // Nama bucket di MinIO
 app.use(morgan('combined'));
 
 function generateFilename() {
-        // Dapatkan waktu saat ini dan formatnya
+        
         const now = new Date();
         const yy = String(now.getFullYear()).slice(2);
         const MM = String(now.getMonth() + 1).padStart(2, '0');
@@ -132,7 +131,7 @@ async function retryFailedLinks(channel) {
 
         if (retries >= retryLimit) {
             console.error(` [#] Download for ${link} failed after ${retryLimit} retries. Giving up.`);
-            continue; // Skip to the next link if retry limit is reached
+            continue; 
         }
 
         try {
@@ -140,16 +139,13 @@ async function retryFailedLinks(channel) {
             processedFiles += 1;
             console.log(` [#] Retried and downloaded ${link}`);
 
-            // Remove link from failedLinks after successful download
             failedLinks.splice(i, 1);
-            i--; // Adjust index after removal
+            i--; // 
         } catch (error) {
             console.error(` [#] Error retrying ${link}:`, error.message);
 
-            // Increment the retry count
             failedLinks[i].retries += 1;
 
-            // If retry limit is reached, log and skip this link
             if (failedLinks[i].retries >= retryLimit) {
                 console.error(` [#] Reached retry limit for ${link}. Will not retry further.`);
             }
@@ -181,12 +177,11 @@ amqp.connect('amqp://localhost', (error0, connection) => {
 
             try {
                 await downloadPDF(pdfLink);
-                processedFiles += 1; // Increment counter setelah berhasil download
-                channel.ack(msg); // Acknowledge pesan setelah berhasil diproses
+                processedFiles += 1; 
+                channel.ack(msg); 
             } catch (error) {
                 console.error(` [#] Error downloading ${pdfLink}:`, error.message);
 
-                // Cek apakah link sudah ada di failedLinks
                 const existingFailedLink = failedLinks.find(item => item.link === pdfLink);
 
                 if (existingFailedLink) {
@@ -195,14 +190,12 @@ amqp.connect('amqp://localhost', (error0, connection) => {
                         console.error(` [#] Reached retry limit for ${pdfLink}. Will not retry further.`);
                     }
                 } else {
-                    // Jika belum ada, tambahkan dengan retries = 1
                     failedLinks.push({ link: pdfLink, retries: 1 });
                 }
 
-                channel.ack(msg); // Acknowledge pesan meskipun gagal
+                channel.ack(msg); 
             }
 
-            // Jika tidak ada lagi pesan di antrian, coba retry failedLinks
             if (channel.checkQueue(queue).messageCount === 0 && failedLinks.length > 0) {
                 await retryFailedLinks(channel);
             }
