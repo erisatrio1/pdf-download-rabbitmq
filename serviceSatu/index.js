@@ -1,6 +1,7 @@
 import express from "express";
 import amqp from "amqplib/callback_api.js";
 import axios from 'axios';
+import morgan from 'morgan';
 
 const app = express();
 const PORT = 5000;
@@ -9,6 +10,7 @@ const PORT = 5000;
 const service2Url = 'http://localhost:5001/check'; 
 
 app.use(express.json());
+app.use(morgan('combined'));
 
 // function untuk mengirim pesan ke RabbitMQ
 function sendToQueue(message) {
@@ -32,7 +34,7 @@ function sendToQueue(message) {
                 persistent: true
             });
 
-            console.log(" [] Sent '%s'", message);
+            console.log(" [#] Sent '%s'", message);
         });
 
         // Tutup koneksi RabbitMQ

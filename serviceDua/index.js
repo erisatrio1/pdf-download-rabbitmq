@@ -13,15 +13,14 @@ const app = express();
 const PORT = 5001;
 
 // Koneksi ke MongoDB
-// mongoose.connect('mongodb://127.0.0.1:27017/pdflogs', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connect('mongodb://127.0.0.1:27017/pdflogs');
 
 const logSchema = new mongoose.Schema({
-    method: String,
-    url: String,
-    status: Number,
-    responseTime: Number,
-    date: { type: Date, default: Date.now }
+    name: String,
+    size: Number,
+    speed: Number,
+    downloadSpeed: Number,
+    message: String,
 });
 
 const Log = mongoose.model('Log', logSchema);
@@ -41,7 +40,7 @@ const minioClient = new Minio.Client({
 
 const bucketName = 'pdf-bucket'; // Nama bucket di MinIO
 
-// Pastikan bucket sudah ada atau buat jika belum ada
+// Check dan create bucket pada MinIO
 (async() => {
     const bucketExist = await minioClient.bucketExists(bucketName);
     try {
@@ -56,59 +55,74 @@ const bucketName = 'pdf-bucket'; // Nama bucket di MinIO
     }
 })();
 
-// Middleware untuk menyimpan log ke MongoDB
-// app.use(morgan('combined', {
-//     stream: {
-//         write: async(message) => {
-//             const [method, url, status, , responseTime] = message.split(' ');
-//             const log = new Log({
-//                 method,
-//                 url,
-//                 status: parseInt(status, 10),
-//                 responseTime: parseFloat(responseTime)
-//             });
-//             await log.save();
-//         }
-//     }
-// }));
-
 app.use(morgan('combined'));
+
+function generateFilename() {
+        // Dapatkan waktu saat ini dan formatnya
+        const now = new Date();
+        const yy = String(now.getFullYear()).slice(2);
+        const MM = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const HH = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+    
+        // Generate NanoID dengan 5 karakter
+        const nanoid = customAlphabet('1234567890abcdef', 5)();
+    
+        // Format nama file
+        const filename = `${yy}${MM}${dd}_${HH}${mm}${ss}_${nanoid}.pdf`;
+
+        return filename;
+};
 
 // Fungsi untuk mendownload file PDF dan menyimpannya di MinIO
 async function downloadPDF(url) {
+
+    const startTime = Date.now();
+
     const response = await axios({
         url,
         method: 'GET',
         responseType: 'stream'
     });
 
+    const contentLength = response.headers['content-length'];
+    const fileSizeInBytes = parseInt(contentLength, 10);
+
     const pass = new stream.PassThrough();
     response.data.pipe(pass);
 
-    // Dapatkan waktu saat ini dan formatnya
-    const now = new Date();
-    const yy = String(now.getFullYear()).slice(2);
-    const MM = String(now.getMonth() + 1).padStart(2, '0');
-    const dd = String(now.getDate()).padStart(2, '0');
-    const HH = String(now.getHours()).padStart(2, '0');
-    const mm = String(now.getMinutes()).padStart(2, '0');
-    const ss = String(now.getSeconds()).padStart(2, '0');
+    const filename = generateFilename();
 
-    // Generate NanoID dengan 5 karakter
-    const nanoid = customAlphabet('1234567890abcdef', 5)();
+    try {
+        await minioClient.putObject(bucketName, filename, pass )
+        const endTime = Date.now(); 
+        const downloadTimeInSeconds = (endTime - startTime) / 1000;
 
-    // Format nama file
-    const filename = `${yy}${MM}${dd}_${HH}${mm}${ss}_${nanoid}.pdf`;
+        const downloadTimeInSecondsRounded = Math.round(downloadTimeInSeconds);
 
-    return new Promise((resolve, reject) => {
-        minioClient.putObject(bucketName, filename, pass, function (err, etag) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(etag);
-            }
+        const downloadSpeed = fileSizeInBytes / downloadTimeInSeconds;
+
+        const downloadSpeedRounded = Math.round(downloadSpeed / 1024);
+
+        console.log(` [#] Downloaded ${filename} (${fileSizeInBytes} bytes) in ${downloadTimeInSecondsRounded} seconds`);
+        console.log(` [#] Download speed: ${downloadSpeedRounded} KB/s`);
+
+        const log = new Log({
+            name: filename,
+            size: fileSizeInBytes,
+            speed: downloadTimeInSecondsRounded,
+            downloadSpeed: downloadSpeedRounded,
+            message:`Downloaded ${filename} (${fileSizeInBytes} bytes) in ${downloadTimeInSecondsRounded} seconds`
         });
-    });
+
+        await log.save();
+        console.log(` [#] Log saved for ${filename}`);
+
+    } catch (error) {
+        console.error(` [#] Error saving log for ${filename}:`, error.message);
+    }
 }
 
 // Fungsi untuk memproses ulang link yang gagal
@@ -117,27 +131,27 @@ async function retryFailedLinks(channel) {
         const { link, retries } = failedLinks[i];
 
         if (retries >= retryLimit) {
-            console.error(` [x] Download for ${link} failed after ${retryLimit} retries. Giving up.`);
+            console.error(` [#] Download for ${link} failed after ${retryLimit} retries. Giving up.`);
             continue; // Skip to the next link if retry limit is reached
         }
 
         try {
             await downloadPDF(link);
             processedFiles += 1;
-            console.log(` [x] Retried and downloaded ${link}`);
+            console.log(` [#] Retried and downloaded ${link}`);
 
             // Remove link from failedLinks after successful download
             failedLinks.splice(i, 1);
             i--; // Adjust index after removal
         } catch (error) {
-            console.error(` [x] Error retrying ${link}:`, error.message);
+            console.error(` [#] Error retrying ${link}:`, error.message);
 
             // Increment the retry count
             failedLinks[i].retries += 1;
 
             // If retry limit is reached, log and skip this link
             if (failedLinks[i].retries >= retryLimit) {
-                console.error(` [x] Reached retry limit for ${link}. Will not retry further.`);
+                console.error(` [#] Reached retry limit for ${link}. Will not retry further.`);
             }
         }
     }
@@ -163,15 +177,14 @@ amqp.connect('amqp://localhost', (error0, connection) => {
 
         channel.consume(queue, async (msg) => {
             const pdfLink = msg.content.toString();
-            console.log(" [x] Received '%s'", pdfLink);
+            console.log(" [#] Received '%s'", pdfLink);
 
             try {
                 await downloadPDF(pdfLink);
                 processedFiles += 1; // Increment counter setelah berhasil download
-                console.log(` [x] Downloaded and saved ${pdfLink}`);
                 channel.ack(msg); // Acknowledge pesan setelah berhasil diproses
             } catch (error) {
-                console.error(` [x] Error downloading ${pdfLink}:`, error.message);
+                console.error(` [#] Error downloading ${pdfLink}:`, error.message);
 
                 // Cek apakah link sudah ada di failedLinks
                 const existingFailedLink = failedLinks.find(item => item.link === pdfLink);
@@ -179,7 +192,7 @@ amqp.connect('amqp://localhost', (error0, connection) => {
                 if (existingFailedLink) {
                     existingFailedLink.retries += 1;
                     if (existingFailedLink.retries >= retryLimit) {
-                        console.error(` [x] Reached retry limit for ${pdfLink}. Will not retry further.`);
+                        console.error(` [#] Reached retry limit for ${pdfLink}. Will not retry further.`);
                     }
                 } else {
                     // Jika belum ada, tambahkan dengan retries = 1
