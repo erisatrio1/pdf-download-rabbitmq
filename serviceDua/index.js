@@ -3,6 +3,9 @@ import amqp from 'amqplib/callback_api.js';
 import axios from 'axios';
 import * as Minio from 'minio'
 import stream from 'stream';
+import puppeteer from 'puppeteer';
+import { executablePath } from 'puppeteer'
+import fs from 'fs'
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { customAlphabet } from 'nanoid';
@@ -80,22 +83,31 @@ async function downloadPDF(url) {
 
     const startTime = Date.now();
 
-    const response = await axios({
-        url,
-        method: 'GET',
-        responseType: 'stream'
+    const browser = await puppeteer.launch({
+        executablePath: executablePath(),
+    });
+    const page = await browser.newPage();
+
+    await page.goto(url, {
+        waitUntil: 'networkidle2',
+        timeout: 0
     });
 
-    const contentLength = response.headers['content-length'];
-    const fileSizeInBytes = parseInt(contentLength, 10);
+    const pdfUint8Array = await page.pdf({
+        format: 'A4',
+        landscape: true 
+    });
 
-    const pass = new stream.PassThrough();
-    response.data.pipe(pass);
+    const pdfBuffer = Buffer.from(pdfUint8Array);
+
+    await browser.close();
+
+    const fileSizeInBytes = pdfBuffer.length;
 
     const filename = generateFilename();
 
     try {
-        await minioClient.putObject(bucketName, filename, pass )
+        await minioClient.putObject(bucketName, filename, pdfBuffer )
         const endTime = Date.now(); 
         const downloadTimeInSeconds = (endTime - startTime) / 1000;
 
