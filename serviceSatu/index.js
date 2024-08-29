@@ -34,7 +34,7 @@ function sendToQueue(message) {
                 persistent: true
             });
 
-            console.log(" [#] Sent '%s'", message);
+            // console.log(" [#] Sent '%s'", message);
         });
 
         // Tutup koneksi RabbitMQ

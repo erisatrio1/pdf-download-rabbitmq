@@ -181,6 +181,8 @@ amqp.connect('amqp://localhost', (error0, connection) => {
             durable: true
         });
 
+        channel.prefetch(1);
+
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
         channel.consume(queue, async (msg) => {
