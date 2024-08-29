@@ -2,6 +2,8 @@ import express from "express";
 import amqp from "amqplib/callback_api.js";
 import axios from 'axios';
 import morgan from 'morgan';
+import { Client } from "@elastic/elasticsearch"
+import { ecsFormat } from "@elastic/ecs-morgan-format"
 
 const app = express();
 const PORT = 5000;
@@ -9,8 +11,47 @@ const PORT = 5000;
 // url untuk check ketersediaan servcie dua
 const service2Url = 'http://localhost:5001/check'; 
 
+// connect elasticsearch
+const client =  new Client({
+    node: 'http://localhost:9200'
+});
+
+(async() => {
+    const indexExists = await client.indices.exists({
+        index: "pdf-downloader"
+    });
+    try {
+        if (!indexExists) {
+            await client.indices.create({ index: 'pdf-downloader' });
+            console.log('Index created');
+        } else {
+            console.log('Index alredy exist');
+          }
+    } catch (error) {
+        console.error(`Error initializing index: ${error}`);
+    }
+})();
+
+const logToElasticsearch = async (log) => {
+    try {
+      await client.index({
+        index: 'pdf-downloader',
+        body: log,
+      });
+    } catch (error) {
+      console.error('Error saving log to Elasticsearch', error);
+    }
+  };
+
 app.use(express.json());
-app.use(morgan('combined'));
+app.use(morgan(ecsFormat(), {
+    stream: {
+      write: (message) => {
+        const log = JSON.parse(message); // Log sudah dalam format JSON ECS
+        logToElasticsearch(log);
+      },
+    },
+}));
 
 // function untuk mengirim pesan ke RabbitMQ
 function sendToQueue(message) {

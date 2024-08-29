@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@elastic/ecs-morgan-format": "^1.5.1",
+    "@elastic/elasticsearch": "^8.15.0",
     "amqplib": "^0.10.4",
     "axios": "^1.7.4",
     "express": "^4.19.2",

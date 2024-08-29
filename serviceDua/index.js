@@ -1,12 +1,9 @@
 import express from 'express';
 import amqp from 'amqplib/callback_api.js';
-import axios from 'axios';
 import * as Minio from 'minio'
-import stream from 'stream';
 import puppeteer from 'puppeteer';
 import { executablePath } from 'puppeteer'
-import fs from 'fs'
-import morgan from 'morgan';
+// import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { customAlphabet } from 'nanoid';
 
@@ -19,9 +16,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/pdflogs');
 
 const logSchema = new mongoose.Schema({
     name: String,
+    createdAt: String,
     size: Number,
     speed: Number,
     downloadSpeed: Number,
+    renderTime: Number,
+    uploadSpeed: Number,
     message: String,
 });
 
@@ -57,7 +57,7 @@ const bucketName = 'pdf-bucket';
     }
 })();
 
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
 
 function generateFilename() {
         
@@ -80,8 +80,10 @@ function generateFilename() {
 
 // Fungsi untuk mendownload file PDF dan menyimpannya di MinIO
 async function downloadPDF(url) {
+    const createdAt = new Date();
 
-    const startTime = Date.now();
+    // Mulai pengukuran untuk render HTML
+    const renderStartTime = Date.now();
 
     const browser = await puppeteer.launch({
         executablePath: executablePath(),
@@ -98,34 +100,56 @@ async function downloadPDF(url) {
         landscape: true 
     });
 
+    const renderEndTime = Date.now(); // Akhir pengukuran render HTML
+    const renderTimeInSeconds = (renderEndTime - renderStartTime) / 1000;
+    // const renderTimeInSecondsRounded = Math.round(renderTimeInSeconds / 1024);
+
+    // Menghitung waktu download PDF
     const pdfBuffer = Buffer.from(pdfUint8Array);
-
-    await browser.close();
-
     const fileSizeInBytes = pdfBuffer.length;
-
     const filename = generateFilename();
 
+    const downloadEndTime = Date.now(); // Akhir pengukuran download PDF
+    const downloadTimeInSeconds = (downloadEndTime - renderEndTime) / 1000;
+    // const downloadTimeInSecondsRounded = Math.round(downloadTimeInSeconds / 1024);
+
+    if (downloadTimeInSeconds === 0) {
+        downloadTimeInSeconds = 0.001; // Set default kecil jika waktu terlalu cepat untuk dihitung
+    }
+
     try {
+        const uploadStartTime = Date.now(); // Mulai pengukuran upload PDF ke MinIO
+
         await minioClient.putObject(bucketName, filename, pdfBuffer )
-        const endTime = Date.now(); 
-        const downloadTimeInSeconds = (endTime - startTime) / 1000;
 
-        const downloadTimeInSecondsRounded = Math.round(downloadTimeInSeconds);
+        const uploadEndTime = Date.now(); // Akhir pengukuran upload PDF ke MinIO
+        const uploadTimeInSeconds = (uploadEndTime - uploadStartTime) / 1000;
 
+        // Menghitung kecepatan download dan upload
         const downloadSpeed = fileSizeInBytes / downloadTimeInSeconds;
-
         const downloadSpeedRounded = Math.round(downloadSpeed / 1024);
 
-        console.log(` [#] Downloaded ${filename} (${fileSizeInBytes} bytes) in ${downloadTimeInSecondsRounded} seconds`);
-        console.log(` [#] Download speed: ${downloadSpeedRounded} KB/s`);
+        const uploadSpeed = fileSizeInBytes / uploadTimeInSeconds;
+        const uploadSpeedRounded = Math.round(uploadSpeed / 1024);
 
+        console.log(` [#] Downloaded ${filename} (${fileSizeInBytes} bytes) in ${downloadTimeInSeconds.toFixed(2)} seconds`);
+        console.log(` [#] Download speed: ${downloadSpeedRounded} KB/s`);
+        console.log(` [#] Uploaded ${filename} in ${uploadTimeInSeconds.toFixed(2)} seconds`);
+        console.log(` [#] Upload speed: ${uploadSpeedRounded} KB/s`);
+        console.log(` [#] Rendered HTML to PDF in ${renderTimeInSeconds.toFixed(2)} seconds`);
+
+        // Menyimpan log ke MongoDB
         const log = new Log({
             name: filename,
+            createdAt: String(createdAt),
             size: fileSizeInBytes,
-            speed: downloadTimeInSecondsRounded,
+            // speed: downloadTimeInSecondsRounded,
+            speed: Number(downloadTimeInSeconds.toFixed(2)),
             downloadSpeed: downloadSpeedRounded,
-            message:`Downloaded ${filename} (${fileSizeInBytes} bytes) in ${downloadTimeInSecondsRounded} seconds`
+            // renderTime: renderTimeInSecondsRounded,
+            renderTime: Number(renderTimeInSeconds.toFixed(2)),
+            uploadSpeed: uploadSpeedRounded,
+            message:`Downloaded ${filename} (${fileSizeInBytes} bytes) in ${downloadTimeInSeconds.toFixed(2)} seconds`
         });
 
         await log.save();
