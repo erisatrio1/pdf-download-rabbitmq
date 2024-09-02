@@ -95,7 +95,7 @@ async function downloadPDF(url) {
         timeout: 0
     });
 
-    const pdfUint8Array = await page.pdf({
+    let pdfUint8Array = await page.pdf({
         format: 'A4',
         landscape: true 
     });
@@ -105,7 +105,7 @@ async function downloadPDF(url) {
     // const renderTimeInSecondsRounded = Math.round(renderTimeInSeconds / 1024);
 
     // Menghitung waktu download PDF
-    const pdfBuffer = Buffer.from(pdfUint8Array);
+    let pdfBuffer = Buffer.from(pdfUint8Array);
     const fileSizeInBytes = pdfBuffer.length;
     const filename = generateFilename();
 
@@ -210,7 +210,7 @@ amqp.connect('amqp://localhost', (error0, connection) => {
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
         channel.consume(queue, async (msg) => {
-            const pdfLink = msg.content.toString();
+            let pdfLink = msg.content.toString();
             console.log(" [#] Received '%s'", pdfLink);
 
             try {
