@@ -88,6 +88,7 @@ async function downloadPDF(url) {
     const browser = await puppeteer.launch({
         executablePath: executablePath(),
     });
+
     const page = await browser.newPage();
 
     await page.goto(url, {
@@ -95,7 +96,7 @@ async function downloadPDF(url) {
         timeout: 0
     });
 
-    let pdfUint8Array = await page.pdf({
+    const pdfUint8Array = await page.pdf({
         format: 'A4',
         landscape: true 
     });
@@ -110,7 +111,7 @@ async function downloadPDF(url) {
     const filename = generateFilename();
 
     const downloadEndTime = Date.now(); // Akhir pengukuran download PDF
-    const downloadTimeInSeconds = (downloadEndTime - renderEndTime) / 1000;
+    let downloadTimeInSeconds = (downloadEndTime - renderEndTime) / 1000;
     // const downloadTimeInSecondsRounded = Math.round(downloadTimeInSeconds / 1024);
 
     if (downloadTimeInSeconds === 0) {
@@ -210,7 +211,7 @@ amqp.connect('amqp://localhost', (error0, connection) => {
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
         channel.consume(queue, async (msg) => {
-            let pdfLink = msg.content.toString();
+            const pdfLink = msg.content.toString();
             console.log(" [#] Received '%s'", pdfLink);
 
             try {
