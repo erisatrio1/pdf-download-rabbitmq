@@ -1,7 +1,7 @@
 
 # Implementasi RabbitMQ dalam service pdf downloader
 
-Project pdf download menggunakan RabbitMQ sebagai message broker.
+Project pdf download menggunakan RabbitMQ sebagai message broker, Minio sebagai storage, mongoDB untuk save logging, elasticsearch dan kibana.
 
 Deskripsi project:
 - serviceSatu adalah service yang berfungsi mengirimkan link yang akan di-pdf-kan dalam bentuk array of links melalui message broker kapada serviceDua. 
