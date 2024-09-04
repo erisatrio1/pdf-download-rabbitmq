@@ -1,5 +1,6 @@
 import express from 'express';
-import amqp from 'amqplib/callback_api.js';
+// import amqp from 'amqplib/callback_api.js';
+import amqp from 'amqplib';
 import * as Minio from 'minio'
 import puppeteer from 'puppeteer';
 import mongoose from 'mongoose';
@@ -46,7 +47,7 @@ const consoleFormat = combine(
     })
 );
   
-  // Custom format for file logs
+// Custom format for file logs
 const fileFormat = combine(
     timestamp(),
     printf(({ timestamp, level, message, ...meta }) => {
@@ -66,7 +67,7 @@ const logger = winston.createLogger({
         format: fileFormat,
     }),
     new winston.transports.Console({ format: consoleFormat }),
-    esTransport, // Elasticsearch transport
+    esTransport, 
 ],
 });
 
@@ -77,7 +78,8 @@ const retryLimit = 5;
 // Konfigurasi MinIO Client
 const minioClient = new Minio.Client({
     endPoint: process.env.MINIO_ENDPOINT, 
-    port: process.env.MINIO_PORT, 
+    // port: process.env.MINIO_PORT, 
+    port: 9000, 
     useSSL: false, 
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY
@@ -161,11 +163,12 @@ const downloadPDF = async(url) => {
     let downloadTimeInMillisecond = downloadEndTime - renderEndTime;
 
     if (downloadTimeInMillisecond === 0) {
-        downloadTimeInMillisecond = 0.001; // Set default kecil jika waktu terlalu cepat untuk dihitung
+        downloadTimeInMillisecond = 1; // Set default kecil jika waktu terlalu cepat untuk dihitung
     }
 
     try {
         const uploadStartTime = Date.now(); // Mulai pengukuran upload PDF ke MinIO
+        const bucketName = 'pdf-bucket'; 
 
         await minioClient.putObject(bucketName, filename, pdfBuffer )
 

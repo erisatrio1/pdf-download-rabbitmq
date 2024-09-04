@@ -1,88 +1,36 @@
 import express from "express";
-import amqp from "amqplib/callback_api.js";
+import amqp from 'amqp-connection-manager';
 import axios from 'axios';
-import morgan from 'morgan';
-import { Client } from "@elastic/elasticsearch"
-import { ecsFormat } from "@elastic/ecs-morgan-format"
+import 'dotenv/config.js'
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT;
 
 // url untuk check ketersediaan servcie dua
-const service2Url = 'http://localhost:5001/check'; 
-
-// connect elasticsearch
-const client =  new Client({
-    node: 'http://localhost:9200'
-});
-
-(async() => {
-    const indexExists = await client.indices.exists({
-        index: "pdf-downloader"
-    });
-    try {
-        if (!indexExists) {
-            await client.indices.create({ index: 'pdf-downloader' });
-            console.log('Index created');
-        } else {
-            console.log('Index alredy exist');
-          }
-    } catch (error) {
-        console.error(`Error initializing index: ${error}`);
-    }
-})();
-
-const logToElasticsearch = async (log) => {
-    try {
-      await client.index({
-        index: 'pdf-downloader',
-        body: log,
-      });
-    } catch (error) {
-      console.error('Error saving log to Elasticsearch', error);
-    }
-  };
+const service2Url = process.env.SERVICE_DUA_URL; 
 
 app.use(express.json());
-app.use(morgan(ecsFormat(), {
-    stream: {
-      write: (message) => {
-        const log = JSON.parse(message); // Log sudah dalam format JSON ECS
-        logToElasticsearch(log);
-      },
-    },
-}));
-// amqp connection manager
-// env 
+
 // function untuk mengirim pesan ke RabbitMQ
-function sendToQueue(message) {
-    amqp.connect('amqp://localhost', (error0, connection) => {
-        if (error0) {
-            throw error0;
+const sendPDF = (message) => {
+    const connection = amqp.connect ([process.env.RABBIT_PORT]);
+    const queue = 'pdf_download_queue';
+
+    const channelWrapper = connection.createChannel({
+        setup: (channel) => {
+            return channel.assertQueue(queue, {durable: true })
         }
-        connection.createChannel((error1, channel) => {
-            if (error1) {
-                throw error1;
-            }
+    })
 
-            const queue = 'pdf_download_queue';
-
-            channel.assertQueue(queue, {
-                durable: true
-            });
-
-            // Kirim pesan ke antrian
-            channel.sendToQueue(queue, Buffer.from(message), {
-                persistent: true
-            });
-
-            // console.log(" [#] Sent '%s'", message);
-        });
-
-        // Tutup koneksi RabbitMQ
-        setTimeout(() => {
-            connection.close();
-        }, 500);
+    channelWrapper
+    .sendToQueue(queue, Buffer.from(message), {
+        persistent: true
+    })
+    .then(() => {
+        return console.log('Success send message')
+    })
+    .catch((r) => {
+        return console.log(r)
     });
 }
 
@@ -100,7 +48,7 @@ app.post('/send-pdf-links', async (req, res) => {
 
         if (healthCheck.status === 200) {
             pdfLinks.forEach(link => {
-                sendToQueue(link);
+                sendPDF(link);
             });
 
             res.json({ message: 'Links sent to queue for processing', totalLinks: pdfLinks.length });
