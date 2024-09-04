@@ -52,7 +52,8 @@ app.use(morgan(ecsFormat(), {
       },
     },
 }));
-
+// amqp connection manager
+// env 
 // function untuk mengirim pesan ke RabbitMQ
 function sendToQueue(message) {
     amqp.connect('amqp://localhost', (error0, connection) => {
