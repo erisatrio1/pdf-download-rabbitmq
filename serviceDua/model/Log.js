@@ -7,8 +7,8 @@ const logSchema = new mongoose.Schema({
     renderDurationInMs: Number,
     donwloadDurationInMs: Number,
     uploadDurationInMs: Number,
-    downloadSpeed: Number,
-    uploadSpeed: Number,
+    downloadSpeedInSecond: Number,
+    uploadSpeedinSecond: Number,
     downloadSuccess: Boolean,
     message: String,
 });

@@ -45,3 +45,110 @@
 2024-09-04T07:53:48.353Z [info]: Received: https://github.com/erisatrio1 
 2024-09-04T07:53:54.246Z [info]: Downloaded 240904_145353_5734e.pdf (348828 bytes) 
 2024-09-04T07:53:54.262Z [info]: Log saved for 240904_145353_5734e.pdf 
+2024-09-05T03:12:15.926Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:12:15.936Z [info]: Connected to Rabbit 
+2024-09-05T03:12:15.939Z [error]: undefined 
+2024-09-05T03:12:15.963Z [info]: Connected to MongoDB 
+2024-09-05T03:13:02.000Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:13:02.008Z [info]: Connected to Rabbit 
+2024-09-05T03:13:02.011Z [error]: undefined 
+2024-09-05T03:13:02.027Z [info]: Connected to MongoDB 
+2024-09-05T03:14:31.903Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:14:37.327Z [info]: Downloaded 240905_101436_54628.pdf (348828 bytes) 
+2024-09-05T03:14:37.349Z [info]: Log saved for 240905_101436_54628.pdf 
+2024-09-05T03:17:30.853Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:17:30.865Z [info]: Connected to Rabbit 
+2024-09-05T03:17:30.869Z [error]: undefined 
+2024-09-05T03:17:30.897Z [info]: Connected to MongoDB 
+2024-09-05T03:17:46.999Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:17:47.008Z [info]: Connected to Rabbit 
+2024-09-05T03:17:47.010Z [error]: undefined 
+2024-09-05T03:17:47.034Z [info]: Connected to MongoDB 
+2024-09-05T03:19:06.892Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:19:06.901Z [info]: Connected to Rabbit 
+2024-09-05T03:19:06.904Z [error]: undefined 
+2024-09-05T03:19:06.933Z [info]: Connected to MongoDB 
+2024-09-05T03:19:35.986Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:19:39.635Z [info]: Downloaded 240905_101939_d18d3.pdf (348647 bytes) 
+2024-09-05T03:19:39.655Z [info]: Log saved for 240905_101939_d18d3.pdf 
+2024-09-05T03:22:41.320Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:22:41.329Z [info]: Connected to Rabbit 
+2024-09-05T03:22:41.332Z [error]: undefined 
+2024-09-05T03:22:41.352Z [info]: Connected to MongoDB 
+2024-09-05T03:27:01.104Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:27:01.111Z [info]: Connected to Rabbit 
+2024-09-05T03:27:01.113Z [error]: undefined 
+2024-09-05T03:27:01.136Z [info]: Connected to MongoDB 
+2024-09-05T03:28:18.470Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:28:18.476Z [info]: Connected to Rabbit 
+2024-09-05T03:28:18.478Z [error]: undefined 
+2024-09-05T03:28:18.510Z [info]: Connected to MongoDB 
+2024-09-05T03:29:26.157Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:29:26.165Z [info]: Connected to Rabbit 
+2024-09-05T03:29:26.167Z [error]: undefined 
+2024-09-05T03:29:26.198Z [info]: Connected to MongoDB 
+2024-09-05T03:31:16.980Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:31:20.256Z [info]: Downloaded 240905_103120_6af68.pdf (348828 bytes) 
+2024-09-05T03:31:20.276Z [info]: Log saved for 240905_103120_6af68.pdf 
+2024-09-05T03:33:55.104Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:33:55.113Z [info]: Connected to Rabbit 
+2024-09-05T03:33:55.116Z [error]: undefined 
+2024-09-05T03:33:55.155Z [info]: Connected to MongoDB 
+2024-09-05T03:34:02.812Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:34:02.822Z [info]: Connected to Rabbit 
+2024-09-05T03:34:02.825Z [error]: undefined 
+2024-09-05T03:34:02.846Z [info]: Connected to MongoDB 
+2024-09-05T03:34:30.538Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:34:30.546Z [info]: Connected to Rabbit 
+2024-09-05T03:34:30.548Z [error]: undefined 
+2024-09-05T03:34:30.572Z [info]: Connected to MongoDB 
+2024-09-05T03:35:31.690Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:35:31.698Z [info]: Connected to Rabbit 
+2024-09-05T03:35:31.701Z [error]: undefined 
+2024-09-05T03:35:31.727Z [info]: Connected to MongoDB 
+2024-09-05T03:39:09.353Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:39:09.361Z [info]: Connected to Rabbit 
+2024-09-05T03:39:09.363Z [error]: Error consume TypeError: channelWrapper.then is not a function 
+2024-09-05T03:39:09.395Z [info]: Connected to MongoDB 
+2024-09-05T03:39:25.318Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:39:25.326Z [info]: Connected to Rabbit 
+2024-09-05T03:39:25.348Z [info]: Connected to MongoDB 
+2024-09-05T03:39:44.243Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:39:48.035Z [info]: Downloaded 240905_103948_bd8a4.pdf (348647 bytes) 
+2024-09-05T03:39:48.056Z [info]: Log saved for 240905_103948_bd8a4.pdf 
+2024-09-05T03:41:23.533Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:41:23.543Z [info]: Connected to Rabbit 
+2024-09-05T03:41:23.578Z [info]: Connected to MongoDB 
+2024-09-05T03:41:37.673Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:41:37.684Z [info]: Connected to Rabbit 
+2024-09-05T03:41:37.717Z [info]: Connected to MongoDB 
+2024-09-05T03:41:54.800Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:41:59.121Z [info]: Downloaded 240905_104159_1faa8.pdf (348828 bytes) 
+2024-09-05T03:41:59.144Z [info]: Log saved for 240905_104159_1faa8.pdf 
+2024-09-05T03:41:59.150Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:42:02.280Z [info]: Downloaded 240905_104202_99866.pdf (348828 bytes) 
+2024-09-05T03:42:02.285Z [info]: Log saved for 240905_104202_99866.pdf 
+2024-09-05T03:42:02.288Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:42:05.535Z [info]: Downloaded 240905_104205_d3774.pdf (348828 bytes) 
+2024-09-05T03:42:05.544Z [info]: Log saved for 240905_104205_d3774.pdf 
+2024-09-05T03:43:07.671Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:43:12.642Z [info]: Downloaded 240905_104312_1434e.pdf (348647 bytes) 
+2024-09-05T03:43:12.647Z [info]: Log saved for 240905_104312_1434e.pdf 
+2024-09-05T03:43:12.652Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:43:15.863Z [info]: Downloaded 240905_104315_e27c1.pdf (348828 bytes) 
+2024-09-05T03:43:15.868Z [info]: Log saved for 240905_104315_e27c1.pdf 
+2024-09-05T03:43:15.871Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:43:19.269Z [info]: Downloaded 240905_104319_c5130.pdf (348828 bytes) 
+2024-09-05T03:43:19.275Z [info]: Log saved for 240905_104319_c5130.pdf 
+2024-09-05T03:43:19.277Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:43:22.929Z [info]: Downloaded 240905_104322_b850c.pdf (348828 bytes) 
+2024-09-05T03:43:22.935Z [info]: Log saved for 240905_104322_b850c.pdf 
+2024-09-05T03:43:22.938Z [info]: Received: https://github.com/erisatrio1 
+2024-09-05T03:43:29.848Z [info]: Downloaded 240905_104329_27a59.pdf (348647 bytes) 
+2024-09-05T03:43:29.854Z [info]: Log saved for 240905_104329_27a59.pdf 
+2024-09-05T03:43:51.475Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:43:51.484Z [info]: Connected to Rabbit 
+2024-09-05T03:43:51.509Z [info]: Connected to MongoDB 
+2024-09-05T03:44:23.730Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T03:44:23.740Z [info]: Connected to Rabbit 
+2024-09-05T03:44:23.787Z [info]: Connected to MongoDB 

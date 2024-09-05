@@ -1,6 +1,5 @@
 import express from 'express';
-// import amqp from 'amqplib/callback_api.js';
-import amqp from 'amqplib';
+import amqp from 'amqp-connection-manager';
 import * as Minio from 'minio'
 import puppeteer from 'puppeteer';
 import mongoose from 'mongoose';
@@ -16,9 +15,10 @@ const { combine, timestamp, printf, json, colorize } = winston.format;
 
 const app = express();
 const PORT = process.env.PORT;
+const bucketName = 'pdf-bucket'; 
 
 const esClient = new Client({ node: process.env.ELASTIC_PORT });
-
+  
 const esTransportOpts = {
     level: "info",
     client: esClient,
@@ -78,7 +78,6 @@ const retryLimit = 5;
 // Konfigurasi MinIO Client
 const minioClient = new Minio.Client({
     endPoint: process.env.MINIO_ENDPOINT, 
-    // port: process.env.MINIO_PORT, 
     port: 9000, 
     useSSL: false, 
     accessKey: process.env.MINIO_ACCESS_KEY,
@@ -87,7 +86,6 @@ const minioClient = new Minio.Client({
 
 // Check dan create bucket pada MinIO
 const initialize = async() => {
-    const bucketName = 'pdf-bucket'; 
     const bucketExist = await minioClient.bucketExists(bucketName);
     try {
         // Koneksi ke MongoDB
@@ -104,7 +102,7 @@ const initialize = async() => {
             logger.info(`Bucket '${bucketName}' already exists.`);
         }
     } catch (error) {
-        logger.error('Error initializing bucket', { error: error.message});
+        logger.error('Error initializing', { error: error.message});
     }
 }
 
@@ -168,7 +166,6 @@ const downloadPDF = async(url) => {
 
     try {
         const uploadStartTime = Date.now(); // Mulai pengukuran upload PDF ke MinIO
-        const bucketName = 'pdf-bucket'; 
 
         await minioClient.putObject(bucketName, filename, pdfBuffer )
 
@@ -189,9 +186,9 @@ const downloadPDF = async(url) => {
         const log = new Log({
             name: filename,
             createdAt: String(createdAt),
-            size: fileSizeInBytes,
-            renderTimeInMs: renderTimeInMillisecond,
-            downloadDurationInMs: downloadTimeInMillisecond,
+            sizeInBytes: fileSizeInBytes,
+            renderDurationInMs: renderTimeInMillisecond,
+            donwloadDurationInMs: downloadTimeInMillisecond,
             uploadDurationInMs:uploadTimeInMillisecond,
             downloadSpeedInSecond: downloadSpeedRounded,
             uploadSpeedinSecond: uploadSpeedRounded,
@@ -218,9 +215,9 @@ async function retryFailedLinks(channel) {
             const log = new Log({
                 name: link,
                 createdAt: String(createdAt),
-                size: 0,
-                renderTimeInMs: 0,
-                downloadDurationInMs: 0,
+                sizeInBytes: 0,
+                renderDurationInMs: 0,
+                donwloadDurationInMs: 0,
                 uploadDurationInMs:0,
                 downloadSpeedInSecond: 0,
                 uploadSpeedinSecond: 0,
@@ -252,7 +249,7 @@ async function retryFailedLinks(channel) {
 
 const connectToRabbit = async() => {
     try {
-        const connection = amqp.connect(process.env.RABBIT_PORT);
+        const connection = amqp.connect ([process.env.RABBIT_PORT]);
         logger.info("Connected to Rabbit");
         return connection;
     } catch (error) {
@@ -263,48 +260,49 @@ const connectToRabbit = async() => {
 
 const consumeMessage = async() => {
     const connection = await connectToRabbit();
-    const channel = await connection.createChannel();
     const queue = 'pdf_download_queue';
 
-    await channel.assertQueue(queue);
-    channel.prefetch(1);
+    const channelWrapper = connection.createChannel({
+        setup: async(channel) => {
+            await channel.assertQueue(queue, {durable: true });
+            channel.prefetch(1);
+            channel.consume(queue, async(msg) => {
+                const pdfLink = msg.content.toString();
+                logger.info(`Received: ${pdfLink}`);
+                try {
+                    await downloadPDF(pdfLink);
+                    processedFiles += 1; 
+                    channel.ack(msg); 
+                } catch (error) {
+                    logger.error(` Error downloading ${pdfLink}:`, { error:error.message });
+        
+                    const existingFailedLink = failedLinks.find(item => item.link === pdfLink);
+        
+                    if (existingFailedLink) {
+                        existingFailedLink.retries += 1;
+                        if (existingFailedLink.retries >= retryLimit) {
+                            logger.error(`Reached retry limit for ${pdfLink}. Will not retry further.`);
+                        }
+                    } else {
+                        failedLinks.push({ link: pdfLink, retries: 1 });
+                    }
+        
+                    channel.ack(msg); 
 
-    channel.consume(queue, async (msg) => {
-        const pdfLink = msg.content.toString();
-        logger.info(`Received: ${pdfLink}`);
-
-        try {
-            await downloadPDF(pdfLink);
-            processedFiles += 1; 
-            channel.ack(msg); 
-        } catch (error) {
-            logger.error(` Error downloading ${pdfLink}:`, { error:error.message });
-
-            const existingFailedLink = failedLinks.find(item => item.link === pdfLink);
-
-            if (existingFailedLink) {
-                existingFailedLink.retries += 1;
-                if (existingFailedLink.retries >= retryLimit) {
-                    logger.error(`Reached retry limit for ${pdfLink}. Will not retry further.`);
+                    if (channel.checkQueue(queue).messageCount === 0 && failedLinks.length > 0) {
+                        await retryFailedLinks(channel);
+                    }
                 }
-            } else {
-                failedLinks.push({ link: pdfLink, retries: 1 });
-            }
-
-            channel.ack(msg); 
+            }, {
+                noAck: false
+            })
         }
-
-        if (channel.checkQueue(queue).messageCount === 0 && failedLinks.length > 0) {
-            await retryFailedLinks(channel);
-        }
-    }, {
-        noAck: false
     })
 }
 
 initialize()
-    .then(() => consumeMessage().catch(logger.error))
-    .catch(logger.error)
+    .then(() => consumeMessage().catch((r) => logger.error(`Error consume ${r}`)))
+    .catch((r) =>logger.error(`Error iniatilize ${r}`))
 
 // Endpoint check ketersediaan service dua
 app.get('/check', (req, res) => {
