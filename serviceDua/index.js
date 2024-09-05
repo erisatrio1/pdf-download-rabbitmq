@@ -10,6 +10,7 @@ import { Client } from '@elastic/elasticsearch'
 import { ElasticsearchTransport } from 'winston-elasticsearch'
 import { Log } from './model/Log.js'
 import 'dotenv/config.js'
+import { Analytics } from './controller/Analytics.js';
  
 const { combine, timestamp, printf, json, colorize } = winston.format;
 
@@ -126,7 +127,6 @@ const generateFilename = () => {
 
 // Fungsi untuk mendownload file PDF dan menyimpannya di MinIO
 const downloadPDF = async(url) => {
-    const createdAt = new Date();
 
     // Mulai pengukuran untuk render HTML
     const renderStartTime = Date.now();
@@ -185,7 +185,6 @@ const downloadPDF = async(url) => {
         // Menyimpan log ke MongoDB
         const log = new Log({
             name: filename,
-            createdAt: String(createdAt),
             sizeInBytes: fileSizeInBytes,
             renderDurationInMs: renderTimeInMillisecond,
             donwloadDurationInMs: downloadTimeInMillisecond,
@@ -211,10 +210,8 @@ async function retryFailedLinks(channel) {
 
         if (retries >= retryLimit) {
             logger.error(`Download for ${link} failed after ${retryLimit} retries. Giving up.`);
-            const createdAt = new Date();
             const log = new Log({
                 name: link,
-                createdAt: String(createdAt),
                 sizeInBytes: 0,
                 renderDurationInMs: 0,
                 donwloadDurationInMs: 0,
@@ -308,6 +305,8 @@ initialize()
 app.get('/check', (req, res) => {
     res.status(200).json({ status: 'UP' });
 });
+
+app.post('/analytics', Analytics);
 
 app.listen(PORT, () => {
     console.log(`Consumer service running on http://localhost:${PORT}`);

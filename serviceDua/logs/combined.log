@@ -152,3 +152,10 @@
 2024-09-05T03:44:23.730Z [info]: Bucket 'pdf-bucket' already exists. 
 2024-09-05T03:44:23.740Z [info]: Connected to Rabbit 
 2024-09-05T03:44:23.787Z [info]: Connected to MongoDB 
+2024-09-05T04:27:18.497Z [error]: Error iniatilize Error: connect ECONNREFUSED ::1:9000 
+2024-09-05T04:28:07.113Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T04:28:07.124Z [info]: Connected to Rabbit 
+2024-09-05T04:28:07.145Z [info]: Connected to MongoDB 
+2024-09-05T04:30:12.134Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-05T04:30:12.142Z [info]: Connected to Rabbit 
+2024-09-05T04:30:12.165Z [info]: Connected to MongoDB 

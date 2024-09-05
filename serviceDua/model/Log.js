@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const logSchema = new mongoose.Schema({
     name: String,
-    createdAt: String,
     sizeInBytes: Number,
     renderDurationInMs: Number,
     donwloadDurationInMs: Number,
@@ -11,6 +10,6 @@ const logSchema = new mongoose.Schema({
     uploadSpeedinSecond: Number,
     downloadSuccess: Boolean,
     message: String,
-});
+}, { timestamps: true });
 
 export const Log = mongoose.model('Log', logSchema);
