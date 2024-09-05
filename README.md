@@ -17,6 +17,7 @@ Clone the project
 ```
 
 Tambahkan .env file pada kedua service dengan detail:
+
 serviceSatu
 
 ```bash
