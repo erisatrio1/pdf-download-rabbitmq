@@ -7,16 +7,6 @@ Deskripsi project:
 - serviceSatu adalah service yang berfungsi mengirimkan link yang akan di-pdf-kan dalam bentuk array of links melalui message broker kapada serviceDua. 
 - serviceDua adalah service yang berfungsi menerima link yang akan di-pdf-kan dari serviceSatu melalui message broker. 
 
-
-
-
-## Installation
-
-Install depedencies dengan npm pada kedua service
-
-```bash
-  npm install
-```
     
 ## Run Locally
 
@@ -24,6 +14,34 @@ Clone the project
 
 ```bash
   git clone https://github.com/erisatrio1/pdf-download-rabbitmq.git
+```
+
+Tambahkan .env file pada kedua service dengan detail:
+serviceSatu
+
+```bash
+PORT=5000
+
+SERVICE_DUA_URL='http://localhost:5001/check'
+
+RABBIT_PORT='amqp://localhost'
+```
+
+serviceDua
+
+```bash
+PORT=5001
+
+ELASTIC_PORT="http://localhost:9200"
+
+MINIO_ENDPOINT='localhost'
+MINIO_PORT=9000
+MINIO_ACCESS_KEY='minioadmin'
+MINIO_SECRET_KEY='minioadmin'
+
+MONGODB_PORT='mongodb://127.0.0.1:27017/pdflogs'
+
+RABBIT_PORT='amqp://localhost'
 ```
 
 Go to the project directory
@@ -61,8 +79,12 @@ Klik tab body pada Postman, ganti dropdown "none" menjadi "raw" kemudian isi den
   ]
 }
 
-kemudian serviceSatu melalui method post /send-pdf-links akan mengirimkan array of links ke serviceDua melalui message broker. 
+kemudian serviceSatu melalui method POST /send-pdf-links akan mengirimkan array of links ke serviceDua melalui message broker. 
 serviceDua akan mencari halaman tersebut dengan puppeteer dan mendownload halaman html ke dalam bentuk pdf. 
+
+Akses analytics untuk melihat rata-rata kecepatan donwload dan upload dalam 10 record terkhir dengan hit endpoint method POST:
+
+http://localhost:5001/analytics
 
 Negative case:
 Untuk mengetahui ketersediaan serviceDua, serviceSatu akan mengecek ketersediaan dengan hit endpoint http://localhost:5001/check 
