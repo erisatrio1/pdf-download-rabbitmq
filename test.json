@@ -1,0 +1,45 @@
+
+
+[ 
+    { "label":"DATA KUALIFIKASI",
+     "type":"table", "api":"sample_isian_data_api_1", 
+     "data_table":{ 
+        "No":"no", 
+        "Kualifikasi":"kualifikasi", 
+        "Subbidang Usaha":"sub_bidang_usaha", 
+        "Spesialisasi":"spesialisasi", 
+        "No. Registrasi Sertifikat Badan Usaha":"no_reg" 
+        } 
+    }, 
+    { 
+        "label":"Data Dokumen", 
+        "type":"table", 
+        "api":"sample_isian_data_api_2", 
+        "data_table":{ 
+            "No": "no", 
+            "KD Resiko": "kd_resiko", 
+            "Nama Dokumen": "dokumen" 
+            } 
+    }, { 
+            "label":"Dengan Ketentuan:", 
+            "type": "list", 
+            "list_items":[ 
+                { "label": "Perizinan Berusaha berlaku sepanjang pelaku usaha berusaha dan tidak ada perubahan klasifikasi dan kualifikasi usaha" }, 
+                { "label": "Dalam melakukan usaha, Pemegang Perizinan Berusaha wajib:", 
+                "child": { 
+                    "type": "a", 
+                    "items": 
+                    [ 
+                        { "label":"Memenuhi peraturan perundang-undangan dalam melaksanakan kegiatannya.", 
+                        "child": 
+                        { "type": "i", 
+                        "items": [ 
+                            { "label":"Memenuhi peraturan perundang-undangan dalam melaksanakan kegiatannya." },
+                            { "label":"Memenuhi persyaratan akreditasi dalam jangka waktu paling lama 3(tiga) tahun." } ] } }, 
+                        { "label":"Menyampaikan laporan berkala setiap tahun kepada Direktorat Jenderal Ketenagalistrikan." }, 
+                        { "label":"Memiliki sistem informasi sertifikasi yang terintegrasi dengan sistem informasi Direktorat Jenderal Ketenagalistrikan dalam jangka waktu paling lama 3(tiga) bulan." }, 
+                        { "label":"Memenuhi persyaratan akreditasi dalam jangka waktu paling lama 3(tiga) tahun." } ] } } ] } ]
+ 
+ 
+ 	
+

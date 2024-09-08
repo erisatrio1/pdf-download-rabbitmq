@@ -1,4 +1,4 @@
-import { Log } from '../model/Log.js';
+import { Log } from '../database/model/Log.js';
 
 export const Analytics = async(req, res) => {
     try {
