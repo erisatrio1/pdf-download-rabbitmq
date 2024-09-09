@@ -1,10 +1,8 @@
 import amqp from 'amqp-connection-manager';
 import { config } from '../config/index.js';
-import ElasticConnect from "../database/index.js";
+import { logger } from "../database/index.js";
 import Service from '../service/index.js';
 
-const winstonLog = new ElasticConnect();
-const logger = winstonLog.elasticConnect()
 
 export const CreateChannel = async() => {
     try {
@@ -17,7 +15,7 @@ export const CreateChannel = async() => {
     }
 }
 
-export const ConsumeLink = (connection, failedLinks, retryLimit) => {
+export const ConsumeLink = (connection, failedLinks, retryLimit, bucketName) => {
     const queue = 'pdf_download_queue';
     let processedFiles = 0; 
     const service = new Service()
@@ -30,7 +28,7 @@ export const ConsumeLink = (connection, failedLinks, retryLimit) => {
                 const pdfLink = msg.content.toString();
                 logger.info(`Received: ${pdfLink}`);
                 try {
-                    await service.downloadPDF(pdfLink);
+                    await service.downloadPDF(pdfLink, bucketName);
                     processedFiles += 1; 
                     channel.ack(msg); 
                 } catch (error) {

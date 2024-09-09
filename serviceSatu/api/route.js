@@ -15,7 +15,7 @@ export const Route = (app, channel) => {
         if (message && totalLinks) {
             return res.json({ message: 'Links sent to queue for processing', totalLinks: pdfLinks.length });
         } else {
-            res.status(503).json({ error: 'Service 2 is unavailable. Please try again later.' });
+            res.status(503).json({ error: error });
         }
     })
 

@@ -20,7 +20,7 @@ class Service {
             }
         } catch (error) {
             // Kirim response jika service 2 tidak tersedia
-            return Result(null, null, 'Service 2 is unavailable. Please try again later.' )
+            return Result(null, null, error )
         }
     }
 }

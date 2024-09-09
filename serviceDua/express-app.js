@@ -5,10 +5,10 @@ import { Route } from './api/route.js'
 const failedLinks = []; 
 const retryLimit = 5; 
 
-export const server = async(app) => {
+export const server = async(app, bucketName) => {
     app.use(express.json());
 
     const connection = await CreateChannel();
-    const consume = ConsumeLink(connection, failedLinks, retryLimit);
+    const consume = ConsumeLink(connection, failedLinks, retryLimit, bucketName);
     Route(app);
 }

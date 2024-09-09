@@ -159,3 +159,101 @@
 2024-09-05T04:30:12.134Z [info]: Bucket 'pdf-bucket' already exists. 
 2024-09-05T04:30:12.142Z [info]: Connected to Rabbit 
 2024-09-05T04:30:12.165Z [info]: Connected to MongoDB 
+2024-09-09T00:41:42.066Z [error]: Error Initializing DB {
+  "error": "bucketExist is not defined"
+}
+2024-09-09T00:41:42.077Z [info]: Connected to Rabbit 
+2024-09-09T00:45:21.465Z [error]: Error Initializing DB {
+  "error": "bucketExist is not defined"
+}
+2024-09-09T00:45:21.475Z [info]: Connected to Rabbit 
+2024-09-09T00:46:54.415Z [error]: Error Initializing DB {
+  "error": "bucketExist is not defined"
+}
+2024-09-09T00:46:54.427Z [info]: Connected to Rabbit 
+2024-09-09T00:47:53.753Z [error]: Error Initializing DB {
+  "error": "minioClient.bucketExists is not a function"
+}
+2024-09-09T00:47:53.762Z [info]: Connected to Rabbit 
+2024-09-09T00:49:36.264Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T00:49:36.303Z [info]: Connected to MongoDB 
+2024-09-09T00:49:36.307Z [info]: Connected to Rabbit 
+2024-09-09T01:05:44.377Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:05:44.380Z [error]:  Error downloading https://github.com/erisatrio1: {
+  "error": "executablePath is not defined"
+}
+2024-09-09T01:08:17.068Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:08:17.113Z [info]: Connected to MongoDB 
+2024-09-09T01:08:17.120Z [info]: Connected to Rabbit 
+2024-09-09T01:08:31.623Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:08:35.799Z [info]: Downloaded 240909_080835_2d176.pdf (349286 bytes) 
+2024-09-09T01:08:35.821Z [info]: Log saved for 240909_080835_2d176.pdf 
+2024-09-09T01:11:03.981Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:08.084Z [info]: Downloaded 240909_081108_2adbd.pdf (205387 bytes) 
+2024-09-09T01:11:08.091Z [info]: Log saved for 240909_081108_2adbd.pdf 
+2024-09-09T01:11:08.097Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:10.896Z [info]: Downloaded 240909_081110_a255c.pdf (349286 bytes) 
+2024-09-09T01:11:10.904Z [info]: Log saved for 240909_081110_a255c.pdf 
+2024-09-09T01:11:10.907Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:15.274Z [info]: Downloaded 240909_081115_a4a03.pdf (349286 bytes) 
+2024-09-09T01:11:15.282Z [info]: Log saved for 240909_081115_a4a03.pdf 
+2024-09-09T01:11:15.285Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:20.561Z [info]: Downloaded 240909_081120_f3a1c.pdf (349286 bytes) 
+2024-09-09T01:11:20.572Z [info]: Log saved for 240909_081120_f3a1c.pdf 
+2024-09-09T01:11:20.576Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:26.136Z [info]: Downloaded 240909_081126_01d90.pdf (349105 bytes) 
+2024-09-09T01:11:26.141Z [info]: Log saved for 240909_081126_01d90.pdf 
+2024-09-09T01:11:26.148Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:30.218Z [info]: Downloaded 240909_081130_46a74.pdf (349286 bytes) 
+2024-09-09T01:11:30.225Z [info]: Log saved for 240909_081130_46a74.pdf 
+2024-09-09T01:11:30.227Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:35.681Z [info]: Downloaded 240909_081135_9786d.pdf (349286 bytes) 
+2024-09-09T01:11:35.689Z [info]: Log saved for 240909_081135_9786d.pdf 
+2024-09-09T01:11:35.691Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:40.812Z [info]: Downloaded 240909_081140_60fd9.pdf (349286 bytes) 
+2024-09-09T01:11:40.817Z [info]: Log saved for 240909_081140_60fd9.pdf 
+2024-09-09T01:11:40.820Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:45.657Z [info]: Downloaded 240909_081145_2097d.pdf (349286 bytes) 
+2024-09-09T01:11:45.661Z [info]: Log saved for 240909_081145_2097d.pdf 
+2024-09-09T01:11:45.664Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:11:50.427Z [info]: Downloaded 240909_081150_a9f8e.pdf (349286 bytes) 
+2024-09-09T01:11:50.439Z [info]: Log saved for 240909_081150_a9f8e.pdf 
+2024-09-09T01:15:41.884Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:15:41.940Z [info]: Connected to MongoDB 
+2024-09-09T01:15:41.944Z [info]: Connected to Rabbit 
+2024-09-09T01:17:34.286Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:17:34.343Z [info]: Connected to MongoDB 
+2024-09-09T01:17:34.350Z [info]: Connected to Rabbit 
+2024-09-09T01:19:03.204Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:19:03.255Z [info]: Connected to MongoDB 
+2024-09-09T01:19:03.261Z [info]: Connected to Rabbit 
+2024-09-09T01:19:51.976Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:19:52.027Z [info]: Connected to MongoDB 
+2024-09-09T01:19:52.031Z [info]: Connected to Rabbit 
+2024-09-09T01:23:41.798Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:23:41.851Z [info]: Connected to MongoDB 
+2024-09-09T01:23:41.856Z [info]: Connected to Rabbit 
+2024-09-09T01:24:06.209Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:24:06.302Z [info]: Connected to MongoDB 
+2024-09-09T01:24:06.311Z [info]: Connected to Rabbit 
+2024-09-09T01:29:35.284Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:29:35.346Z [info]: Connected to MongoDB 
+2024-09-09T01:29:35.349Z [info]: Connected to Rabbit 
+2024-09-09T01:29:47.150Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:29:47.210Z [info]: Connected to MongoDB 
+2024-09-09T01:29:47.215Z [info]: Connected to Rabbit 
+2024-09-09T01:30:51.834Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:30:51.913Z [info]: Connected to MongoDB 
+2024-09-09T01:30:51.919Z [info]: Connected to Rabbit 
+2024-09-09T01:31:27.307Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:31:27.366Z [info]: Connected to MongoDB 
+2024-09-09T01:31:27.372Z [info]: Connected to Rabbit 
+2024-09-09T01:31:37.222Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:31:37.280Z [info]: Connected to MongoDB 
+2024-09-09T01:31:37.286Z [info]: Connected to Rabbit 
+2024-09-09T01:38:17.758Z [info]: Bucket 'pdf-bucket' already exists. 
+2024-09-09T01:38:17.810Z [info]: Connected to MongoDB 
+2024-09-09T01:38:17.815Z [info]: Connected to Rabbit 
+2024-09-09T01:38:28.004Z [info]: Received: https://github.com/erisatrio1 
+2024-09-09T01:38:32.502Z [info]: Downloaded 240909_083832_89e64.pdf (349105 bytes) 
+2024-09-09T01:38:32.532Z [info]: Log saved for 240909_083832_89e64.pdf 

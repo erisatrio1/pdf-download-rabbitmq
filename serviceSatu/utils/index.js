@@ -17,7 +17,7 @@ export const CreateChannel = async() => {
     }
 }
 
-export const SendLink = (channelWrapper, message) => {
+export const SendLink = (message, channelWrapper) => {
 
     channelWrapper
     .sendToQueue(queue, Buffer.from(message), {

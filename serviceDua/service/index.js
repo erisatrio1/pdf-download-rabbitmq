@@ -1,11 +1,10 @@
 import puppeteer from 'puppeteer';
-import ElasticConnect from "../database/index.js";
 import { Log } from '../database/model/Log.js';
-import { MinioClient } from '../database/index.js'
+import { minioClient, logger } from '../database/index.js'
 import { Result } from '../utils/index.js';
+import { executablePath } from 'puppeteer'
+import { customAlphabet } from 'nanoid';
 
-const winstonLog = new ElasticConnect();
-const logger = winstonLog.elasticConnect()
 
 class Service {
     generateFilename() {
@@ -26,7 +25,7 @@ class Service {
         return filename;
     }
 
-    async downloadPDF(url) {
+    async downloadPDF(url, bucketName) {
         // Mulai pengukuran untuk render HTML
         const renderStartTime = Date.now();
 
@@ -65,7 +64,6 @@ class Service {
 
         try {
             const uploadStartTime = Date.now(); // Mulai pengukuran upload PDF ke MinIO
-            const minioClient = MinioClient();
 
             await minioClient.putObject(bucketName, filename, pdfBuffer )
 
@@ -154,12 +152,13 @@ class Service {
             // Hitung rata-rata kecepatan download dan upload
             const averageDownloadSpeed = totalDownloadSpeed / records.length;
             const averageUploadSpeed = totalUploadSpeed / records.length;
-    
-            // Return hasil
-            return Result('in byte per second', {
+            const data= {
                 AverageLastTenDownloadRecords:averageDownloadSpeed,
                 AverageLastTenUploadRecords:averageUploadSpeed
-                }, null)
+            }
+    
+            // Return hasil
+            return Result('in byte per second', data, null)
 
         } catch (error) {
             return Result(null, null, error.message)
